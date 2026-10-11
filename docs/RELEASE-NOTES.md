@@ -333,5 +333,5 @@ devices** runs, and the first checked against real hardware end to end.
 - The sidecar starts with no console window on Windows.
 
 Not in this release, logged: Tracert and Collect surviving a tab change
-, a cable between two uncollected neighbours on the review,
-VRF-aware next-hop resolution, and the EVE-NG platforms.
+, a cable between two uncollected neighbours on the review and
+VRF-aware next-hop resolution.
