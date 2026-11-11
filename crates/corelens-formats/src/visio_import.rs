@@ -161,12 +161,14 @@ pub fn decode_xml(bytes: &[u8]) -> String {
     if utf16le || utf16be || looks_utf16 {
         let body = if utf16le || utf16be { &bytes[2..] } else { bytes };
         let units: Vec<u16> = body
-            .chunks_exact(2)
+            .as_chunks::<2>()
+            .0
+            .iter()
             .map(|c| {
                 if utf16be {
-                    u16::from_be_bytes([c[0], c[1]])
+                    u16::from_be_bytes(*c)
                 } else {
-                    u16::from_le_bytes([c[0], c[1]])
+                    u16::from_le_bytes(*c)
                 }
             })
             .collect();
@@ -1066,7 +1068,7 @@ then import that."
     }
 
     let mut page_parts: Vec<String> = (0..zip.len())
-        .filter_map(|i| zip.by_index(i).ok().map(|f| f.name().to_string()))
+        .filter_map(|i| zip.by_index(i).ok().and_then(|f| f.name().ok().map(|n| n.to_string())))
         // `pages.xml` is the index, not a page — and it starts with the same
         // prefix, so it has to be excluded by name rather than by prefix.
         .filter(|n| {
@@ -1191,7 +1193,7 @@ mod tests {
     fn real_connectors_start_and_end_where_visio_says() {
         let bytes = std::fs::read(std::env::var("CV_VSDX").expect("CV_VSDX")).unwrap();
         let mut zip = zip::ZipArchive::new(std::io::Cursor::new(bytes)).unwrap();
-        let names: Vec<String> = zip.file_names().filter(|n| n.starts_with("visio/pages/page") && n.ends_with(".xml")).map(str::to_string).collect();
+        let names: Vec<String> = zip.file_names().filter_map(Result::ok).filter(|n| n.starts_with("visio/pages/page") && n.ends_with(".xml")).map(|n| n.to_string()).collect();
         let mut checked = 0;
         for name in names {
             let mut buf = Vec::new();
