@@ -46,6 +46,14 @@ Newest first.
   and no longer re-renders every link with a port label when it is let go.
 - Line hops are worked out for diagrams of up to 1,200 links (it was 160).
 
+**Security updates in the backend**
+- The libraries behind TLS, the project database and archive reading are
+  updated to the releases that fix the advisories published in late October:
+  `rustls` 0.23.46 and its certificate crates, `crypto-bigint`, `ctutils`,
+  SQLite (through `rusqlite` 0.41) and `zip` 9 — the last one also in the
+  update checker, which moves to `tauri-plugin-updater` 2.14. Building from
+  source now needs Rust 1.90 or later.
+
 ## 2.12.1 — 2026-10-10
 
 **A new signing certificate, under the new name**
